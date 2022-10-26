@@ -6,6 +6,6 @@
 
 * The output at the end is printed out in the desired format. For now, I have limited the output to [Job_Title, Job_Overview, Basic_Qualifications]. We can obviously add more if we desire to.
 
-* Requests.txt file is added to install all the depenedent libraries.
+* A requirements.txt file is added to install all the depenedent libraries.
 
 I hope you like and are able to understand the code without any difficulty.Please let me know if there are any other changes that need to be done :).
