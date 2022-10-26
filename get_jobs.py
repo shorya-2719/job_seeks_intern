@@ -1,15 +1,18 @@
+#Importing all the libraries needed for the project/problem at hand.
 import requests
 import re
 import sys
+
+#Storing the response from the first API call in r.
 r = requests.get('https://boards.greenhouse.io/embed/job_board?for=coursera', auth=('user', 'pass'))
-#Making sure we get the 200 status code for the API call
+#Making sure we get the 200 status code for the API call.
 if(r.status_code!=200):
     sys.exit("Status code not equal to 200")
-#Getting all the starting indexes of the job id
+#Getting all the starting indexes of the job id.
 res = [i.start() for i in re.finditer("gh_jid", r.text)]
 
 all_urls = []
-#Getting all the urls for the job ids
+#Getting all the urls for the job ids.
 for i in range(len(res)):
     s = ""
     index = res[i]
@@ -21,6 +24,7 @@ for i in range(len(res)):
         s = s + r.text[temp]
         temp = temp + 1
     all_urls.append(s)
+
 #Getting all the job ids
 all_job_ids = []
 for i in range(len(all_urls)):
@@ -28,17 +32,21 @@ for i in range(len(all_urls)):
     all_job_ids.append(all_urls[i][index+1:])
 url_to_call = "https://boards.greenhouse.io/embed/job_app?for=coursera&token="
 
+#all_info stores all the info that we will output at the end
 all_info = []
-#Getting all of the info related to the jobs we need
+#Getting all of the info related to the jobs we need.
 for i in range(len(all_job_ids)):
     api_url = url_to_call + all_job_ids[i]
     res = requests.get(api_url, auth=('user', 'pass'))
+    #If the API call fails , we go on to the next job.
     if(res.status_code!=200):
         continue
     #Job_Title
+    #Job info stores all the info for a particular job
     job_info = []
     index_app_title = res.text.find('app-title')
     temp = index_app_title
+    #This is where we store the title of the job.
     job_string = ""
     while(res.text[temp]!='<'):
         job_string+=res.text[temp]
@@ -51,6 +59,7 @@ for i in range(len(all_job_ids)):
         temp = temp + 1
     while(res.text[temp]!='>'):
         temp = temp + 1
+    #Storing the overview of the job in a string which gets appended with characters owing to particular conditions.
     string_job_overview = ""
     temp = temp + 1
     while(res.text[temp]!='<'):
@@ -67,6 +76,7 @@ for i in range(len(all_job_ids)):
         ul_close_index = ul_close_index + 1
     html_basic_qualifications = res.text[ul_index + 4:ul_close_index]
     temp_res = [j.start() for j in re.finditer("</span></li>",html_basic_qualifications)]
+    #Storing all the basic qualifications required in a separate list.
     all_basic_qualifications = []
     for j in range(len(temp_res)):
         temp_basic_qual = ""
